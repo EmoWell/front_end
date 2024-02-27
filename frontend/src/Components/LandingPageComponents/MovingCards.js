@@ -1,4 +1,4 @@
-import { cn } from "../Utils/cn";
+import { cn } from "../../Utilities/cn";
 import React, { useEffect, useRef, useState } from "react";
 
 export const MovingCards = ({

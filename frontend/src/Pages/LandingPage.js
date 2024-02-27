@@ -1,8 +1,9 @@
 import React from "react";
-import Lamp1 from "../Components/Lamp1";
-import { MovingCards } from "../Components/MovingCards";
-import { LandingPageText } from "../Components/LandingPageText";
-import GetStartedBtn from "../Components/GetStartedBtn";
+import Lamp1 from "../Components/LandingPageComponents/Lamp1";
+import { MovingCards } from "../Components/LandingPageComponents/MovingCards";
+import { LandingPageText } from "../Components/LandingPageComponents/LandingpageText";
+import GetStartedBtn from "../Components/LandingPageComponents/GetStartedBtn";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const items = [
@@ -65,13 +66,17 @@ export default function LandingPage() {
         <Lamp1 />
       </div>
       <div>
-        <LandingPageText words={"hello there, isn't it a depression detection page"} />
+        <LandingPageText
+          words={"hello there, isn't it a depression detection page"}
+        />
       </div>
       <div className="w-full h-40 mt-32">
         <MovingCards items={items} direction="right" speed="slow" />
       </div>
       <div>
-        <GetStartedBtn/>
+      <Link to="/chatbot-dashboard">
+        <GetStartedBtn />
+        </Link>
       </div>
     </div>
   );

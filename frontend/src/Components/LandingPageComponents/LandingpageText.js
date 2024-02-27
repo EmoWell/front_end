@@ -1,7 +1,6 @@
-"use client";
 import { useEffect } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
-import { cn } from "../Utils/cn";
+import { cn } from "../../Utilities/cn";
 
 export const LandingPageText = ({ words, className }) => {
   const [scope, animate] = useAnimate();
@@ -17,7 +16,7 @@ export const LandingPageText = ({ words, className }) => {
         delay: stagger(0.2),
       }
     );
-  }, [scope.current,wordsArray]);
+  }, [scope.current, wordsArray]);
 
   const renderWords = () => {
     return (
