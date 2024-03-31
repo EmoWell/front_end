@@ -74,7 +74,7 @@ export default function LandingPage() {
         <MovingCards items={items} direction="right" speed="slow" />
       </div>
       <div>
-      <Link to="/chatbot-dashboard">
+      <Link to="/login">
         <GetStartedBtn />
         </Link>
       </div>

@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import ChatbotDashboard from "../Pages/ChatbotDashboard";
 import LandingPage from "../Pages/LandingPage";
+import LoginPage from "../Components/LoginPageComponents/LoginPage";
+import SignupPage from "../Components/SignupPageComponents/SignupPage";
 
 export default function AppRouter() {
   return (
@@ -15,6 +17,8 @@ export default function AppRouter() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chatbot-dashboard" element={<ChatbotDashboard />} />
+        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
     </Router>
   );
