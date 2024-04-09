@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function TopNavbar() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
-    <nav className="relative flex w-full flex-wrap items-center justify-between bg-neutral-100 py-2 shadow-dark-mild dark:bg-neutral-700 lg:py-4" data-twe-navbar-ref>
+    <nav
+      className="fixed top-0 w-full flex-wrap items-center justify-between bg-slate-700 py-2 shadow-dark-mild dark:bg-neutral-700 lg:py-4"
+      data-twe-navbar-ref
+    >
       <div className="flex w-full flex-wrap items-center justify-between px-3">
         <div className="relative ms-auto" data-twe-dropdown-ref>
           <button
             onClick={handleToggleDropdown}
-            className="flex items-center whitespace-nowrap text-black/60 transition duration-200 hover:text-black/80 hover:ease-in-out focus:text-black/80 active:text-black/80 motion-reduce:transition-none dark:text-white/60 dark:hover:text-white/80 dark:focus:text-white/80 dark:active:text-white/80"
+            className="flex items-center whitespace-wrap text-black/60 transition duration-200 hover:text-black/80 hover:ease-in-out focus:text-black/80 active:text-black/80 motion-reduce:transition-none dark:text-white/60 dark:hover:text-white/80 dark:focus:text-white/80 dark:active:text-white/80"
             id="navbarDropdownMenuLink"
             role="button"
             data-twe-dropdown-toggle-ref
-            aria-expanded={isDropdownOpen ? 'true' : 'false'}
+            aria-expanded={isDropdownOpen ? "true" : "false"}
           >
             <img
               src="https://tecdn.b-cdn.net/img/Photos/Avatars/img (31).webp"
               className="rounded-full"
-              style={{ height: '22px', width: '22px' }}
+              style={{ height: "35px", width: "35px" }}
               alt="Avatar"
               loading="lazy"
             />
@@ -41,14 +44,14 @@ export default function TopNavbar() {
               </svg>
             </span>
           </button>
-          {/* Dropdown menu */}
           <ul
-            className={`dark:bg-surfa absolute left-0 right-auto z-[1000] float-left m-0 ${
-              isDropdownOpen ? 'block' : 'hidden'
-            } min-w-[10rem] list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg data-twe-dropdown-show dark:bg-surface-dark`}
+            className={`absolute right-0 w-48 z-[5000] ${
+              isDropdownOpen ? "block" : "hidden"
+            } overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg data-twe-dropdown-show dark:bg-surface-dark`}
             aria-labelledby="navbarDropdownMenuLink"
             data-twe-dropdown-menu-ref
           >
+            {/* Adjusted width to 48 (can adjust as needed) */}
             <li>
               <a
                 href="#"
