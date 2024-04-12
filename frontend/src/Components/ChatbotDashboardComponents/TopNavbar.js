@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function TopNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [loginToken, setLoginToken] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("loginToken");
+    if (token) {
+      setLoginToken(token);
+    }
+  }, []);
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -12,12 +20,11 @@ export default function TopNavbar() {
 
   const handleLogout = async () => {
     try {
-      const signupToken = localStorage.getItem('signupToken');
       const headers = {
-        Authorization: `Token ${signupToken}`
+        Authorization: `Token ${loginToken}`
       };
       await axios.post("http://127.0.0.1:8000/chat_auth/api/logout/", null, { headers });
-      localStorage.removeItem('signupToken');
+      localStorage.removeItem('loginToken');
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error)
@@ -89,7 +96,7 @@ export default function TopNavbar() {
             <li>
               <a
                 href="#"
-                onClick={handleLogout} // Call handleLogout on click
+                onClick={handleLogout}
                 className="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-zinc-200/60 focus:bg-zinc-200/60 focus:outline-none active:bg-zinc-200/60 active:no-underline dark:bg-surface-dark dark:text-white dark:hover:bg-neutral-800/25 dark:focus:bg-neutral-800/25 dark:active:bg-neutral-800/25"
                 data-twe-dropdown-item-ref
               >

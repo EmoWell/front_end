@@ -1,8 +1,7 @@
-import React, { useState, createContext, useContext } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const AuthContext = createContext();
+import axios from "axios";
+import TopNavbar from "../ChatbotDashboardComponents/TopNavbar";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,8 +9,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState(null);
-  const [authToken, setAuthToken] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [loginToken, setLoginToken] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,11 +21,10 @@ export default function LoginPage() {
   };
 
   const handleLoginSuccess = (data) => {
-    const { auth_token, user_id } = data;
-    setAuthToken(auth_token);
-    setUserId(user_id);
-    localStorage.setItem("authToken", auth_token);
-    localStorage.setItem("userId", user_id);
+    const { token } = data;
+    setLoginToken(token); 
+    localStorage.setItem("loginToken", token);
+    console.log("loginToken", token)
     navigate("/chatbot-dashboard");
   };
 
@@ -47,7 +44,8 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthContext.Provider value={{ authToken, userId }}>
+    <>
+      <TopNavbar loginToken={loginToken} />
       <section className="bg-slate-500 h-screen flex justify-center items-center">
         <div className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm">
           <h2 className="text-4xl text-white mb-4"><b>Sign In</b></h2>
@@ -91,6 +89,6 @@ export default function LoginPage() {
           </div>
         </div>
       </section>
-    </AuthContext.Provider>
+    </>
   );
 }

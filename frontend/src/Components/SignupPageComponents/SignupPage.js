@@ -24,31 +24,29 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("Form Data:", formData);
       const response = await axios.post(
         "http://127.0.0.1:8000/chat_auth/api/register/",
         formData
       );
       console.log("Signup successful:", response.data);
-      
-      // Extract the token from the response
-      const { token } = response.data;
-  
-      // Store the token in local storage
-      localStorage.setItem("signupToken", token);
-  
-      // Navigate to the login page
       navigate("/login");
     } catch (error) {
       console.error("Signup failed:", error);
       alert("Problem signing in...user already exists");
     }
   };
-  
+
   return (
     <section className="bg-slate-500 h-screen flex justify-center items-center">
-      <form onSubmit={handleSubmit} className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm"
+      >
         <div className="space-y-4">
-          <h2 className="text-4xl text-white mb-4"><b>Sign Up</b></h2>
+          <h2 className="text-4xl text-white mb-4">
+            <b>Sign Up</b>
+          </h2>
           <div className="form space-y-1">
             <div className="inputBox relative">
               <input

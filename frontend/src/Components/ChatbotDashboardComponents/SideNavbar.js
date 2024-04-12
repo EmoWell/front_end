@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import logo from "./logo.png";
 
 export default function SideNavbar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -84,7 +85,7 @@ export default function SideNavbar() {
             </li>
             <li>
               <a
-                href="#"
+                href="/profile"
                 className="flex flex-row items-center h-12 transform hover:translate-x-5 transition-transform ease-in duration-200 text-white hover:text-gray-300"
               >
                 <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
@@ -123,7 +124,14 @@ export default function SideNavbar() {
           className="absolute top-2 left-2 bg-gray-700 rounded-full p-2 cursor-pointer"
           onClick={toggleSidebar}
         >
-          <span className="text-white text-xl">Emowell</span>
+          <div className="absolute left-2 bg-gray-700 rounded-full p-2 cursor-pointer flex items-center">
+            <img
+              src={logo}
+              alt="Emowell Logo"
+              className="h-8 w-auto rounded-full mr-2"
+            />
+            <span className="text-white text-xl font-serif font-bold">Emowell</span>
+          </div>
         </div>
         <button
           className="lg:hidden absolute top-2 left-16 bg-gray-700 rounded-full p-2"
