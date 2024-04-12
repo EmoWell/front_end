@@ -15,7 +15,6 @@ export default function Chatbot() {
         const response = await axios.get("http://127.0.0.1:8000/phq/api/questions/");
         setQuestions(response.data);
         setLoading(false);
-        // Initiate conversation with a greeting message
         setMessages([{ text: "Hey, how are you today?", sender: "bot" }]);
       } catch (error) {
         console.error("Error fetching questions:", error);
@@ -39,7 +38,6 @@ export default function Chatbot() {
     if (inputValue.trim() === "") return;
 
     if (currentQuestionIndex === 0) {
-      // User response to the initial question
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: inputValue, sender: "user" },
@@ -51,11 +49,11 @@ export default function Chatbot() {
       ]);
 
       const currentQuestionId = questions[currentQuestionIndex].id;
-      const authToken = localStorage.getItem('authToken');
+      const userId = localStorage.getItem('userId'); // Retrieve user_id from local storage
       const userResponse = {
         question_id: currentQuestionId,
         response_text: inputValue,
-        user: authToken
+        user: userId
       };
 
       axios.post("http://127.0.0.1:8000/phq/api/responses/", userResponse)

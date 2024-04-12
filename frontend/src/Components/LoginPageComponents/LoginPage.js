@@ -1,10 +1,8 @@
 import React, { useState, createContext, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./LoginPage.css";
 
-// Create a context to hold the authentication token
-const AuthTokenContext = createContext();
+const AuthContext = createContext();
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +11,7 @@ export default function LoginPage() {
   });
   const [error, setError] = useState(null);
   const [authToken, setAuthToken] = useState(null);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,12 +22,12 @@ export default function LoginPage() {
     }));
   };
 
-  const handleLoginSuccess = (token) => {
-    // Store the authentication token in state
-    setAuthToken(token);
-    console.log("auth :",token);
-    localStorage.setItem('authToken', token);
-    // Navigate to the chatbot dashboard page
+  const handleLoginSuccess = (data) => {
+    const { auth_token, user_id } = data;
+    setAuthToken(auth_token);
+    setUserId(user_id);
+    localStorage.setItem("authToken", auth_token);
+    localStorage.setItem("userId", user_id);
     navigate("/chatbot-dashboard");
   };
 
@@ -40,8 +39,7 @@ export default function LoginPage() {
         formData
       );
       console.log("Login successful:", response.data);
-      const { token } = response.data;
-      handleLoginSuccess(token); // Pass the authentication token to handleLoginSuccess
+      handleLoginSuccess(response.data);
     } catch (error) {
       console.error("Login failed:", error);
       setError("Invalid username or password");
@@ -49,46 +47,50 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthTokenContext.Provider value={authToken}>
-      <section>
-        <div className="signin">
-          <div className="content">
-            <h2>Sign In</h2>
-            <div className="form">
-              {error && <div className="error">{error}</div>}
-              <form onSubmit={handleSubmit}>
-                <div className="inputBox">
-                  <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                  />
-                  <i>Username</i>
-                </div>
-                <div className="inputBox">
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <i>Password</i>
-                </div>
-                <div className="links">
-                  <a href="#">Forgot Password</a>
-                  <a href="/signup">Signup</a>
-                </div>
-                <div className="inputBox">
-                  <input type="submit" value="Login" />
-                </div>
-              </form>
-            </div>
+    <AuthContext.Provider value={{ authToken, userId }}>
+      <section className="bg-slate-500 h-screen flex justify-center items-center">
+        <div className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm">
+          <h2 className="text-4xl text-white mb-4"><b>Sign In</b></h2>
+          <div className="space-y-4">
+            {error && <div className="text-red-500">{error}</div>}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex flex-col">
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Username"
+                  className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                  className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
+                  required
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-white">New User???</p>
+                <a href="/signup" className="text-blue-500">Signup</a>
+              </div>
+              <div className="flex flex-col">
+                <input
+                  type="submit"
+                  value="Login"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer"
+                />
+              </div>
+            </form>
           </div>
         </div>
       </section>
-    </AuthTokenContext.Provider>
+    </AuthContext.Provider>
   );
 }

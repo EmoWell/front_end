@@ -1,10 +1,27 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function TopNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const signupToken = localStorage.getItem('signupToken');
+      const headers = {
+        Authorization: `Token ${signupToken}`
+      };
+      await axios.post("http://127.0.0.1:8000/chat_auth/api/logout/", null, { headers });
+      localStorage.removeItem('signupToken');
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
   };
 
   return (
@@ -34,7 +51,7 @@ export default function TopNavbar() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className="[&>svg]:w-5"
+                className="[&gt;svg]:w-5"
               >
                 <path
                   fillRule="evenodd"
@@ -51,7 +68,6 @@ export default function TopNavbar() {
             aria-labelledby="navbarDropdownMenuLink"
             data-twe-dropdown-menu-ref
           >
-            {/* Adjusted width to 48 (can adjust as needed) */}
             <li>
               <a
                 href="#"
@@ -73,6 +89,7 @@ export default function TopNavbar() {
             <li>
               <a
                 href="#"
+                onClick={handleLogout} // Call handleLogout on click
                 className="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-zinc-200/60 focus:bg-zinc-200/60 focus:outline-none active:bg-zinc-200/60 active:no-underline dark:bg-surface-dark dark:text-white dark:hover:bg-neutral-800/25 dark:focus:bg-neutral-800/25 dark:active:bg-neutral-800/25"
                 data-twe-dropdown-item-ref
               >

@@ -29,20 +29,26 @@ export default function SignupPage() {
         formData
       );
       console.log("Signup successful:", response.data);
-      navigate("/login");
       
+      // Extract the token from the response
+      const { token } = response.data;
+  
+      // Store the token in local storage
+      localStorage.setItem("signupToken", token);
+  
+      // Navigate to the login page
+      navigate("/login");
     } catch (error) {
       console.error("Signup failed:", error);
-      alert("Problem signing in...user already exists")
+      alert("Problem signing in...user already exists");
     }
   };
-
+  
   return (
-    <section className="flex justify-center items-center min-h-screen">
-      {/* Your signup form */}
-      <form onSubmit={handleSubmit} className="signin">
-        <div className="content">
-          <h2 className="text-4xl text-blue-500">Sign Up</h2>
+    <section className="bg-slate-500 h-screen flex justify-center items-center">
+      <form onSubmit={handleSubmit} className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <div className="space-y-4">
+          <h2 className="text-4xl text-white mb-4"><b>Sign Up</b></h2>
           <div className="form space-y-1">
             <div className="inputBox relative">
               <input
@@ -51,11 +57,9 @@ export default function SignupPage() {
                 value={formData.first_name}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border-none outline-none px-4 py-2 rounded text-white"
+                placeholder="First Name"
+                className="w-full my-3 border-gray-400 outline-none px-4 py-2 rounded  text-black"
               />
-              <i className="absolute left-0 top-0 px-4 py-3 text-gray-500 transition duration-500">
-                First Name
-              </i>
             </div>
             <div className="inputBox relative">
               <input
@@ -64,13 +68,10 @@ export default function SignupPage() {
                 value={formData.last_name}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border-none outline-none px-4 py-2 rounded text-white"
+                placeholder="Last Name"
+                className="w-full mb-3  border-gray-400 outline-none px-4 py-2 rounded  text-black"
               />
-              <i className="absolute left-0 top-0 px-4 py-3 text-gray-500 transition duration-500">
-                Last Name
-              </i>
             </div>
-
             <div className="inputBox relative">
               <input
                 type="text"
@@ -78,13 +79,10 @@ export default function SignupPage() {
                 value={formData.username}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border-none outline-none px-4 py-2 rounded text-white"
+                placeholder="Username"
+                className="w-full mb-3 border-gray-400 outline-none px-4 py-2 rounded  text-black"
               />
-              <i className="absolute left-0 top-0 px-4 py-3 text-gray-500 transition duration-500">
-                Username
-              </i>
             </div>
-
             <div className="inputBox relative">
               <input
                 type="email"
@@ -92,13 +90,10 @@ export default function SignupPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border-none outline-none px-4 py-2 rounded text-white"
+                placeholder="Email Address"
+                className="w-full mb-3 border-gray-400 outline-none px-4 py-2 rounded  text-black"
               />
-              <i className="absolute left-0 top-0 px-4 py-3 text-gray-500 transition duration-500">
-                Email Address
-              </i>
             </div>
-
             <div className="inputBox relative">
               <input
                 type="password"
@@ -106,17 +101,16 @@ export default function SignupPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border-none outline-none px-4 py-2 rounded text-white"
+                placeholder="Password"
+                className="w-full mb-3 border-gray-400 outline-none px-4 py-2 rounded text-black"
               />
-              <i className="absolute left-0 top-0 px-4 py-3 text-gray-500 transition duration-500">
-                Password
-              </i>
             </div>
+            <a href="/login">Login</a>
             <div className="inputBox">
               <input
                 type="submit"
                 value="SignUp"
-                className="px-4 py-2 bg-blue-500 text-black font-semibold rounded cursor-pointer transition duration-300 hover:bg-blue-700"
+                className="w-full mt-2 px-4 py-2 bg-blue-600 text-black font-semibold rounded cursor-pointer transition duration-300 hover:bg-blue-700"
               />
             </div>
           </div>
