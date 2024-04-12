@@ -21,10 +21,12 @@ export default function LoginPage() {
   };
 
   const handleLoginSuccess = (data) => {
-    const { token } = data;
+    const { token, full_name, last_login } = data;
     setLoginToken(token); 
     localStorage.setItem("loginToken", token);
-    console.log("loginToken", token)
+    console.log("loginToken", token);
+    localStorage.setItem("username", full_name);
+    localStorage.setItem("lastLogin",last_login)
     navigate("/chatbot-dashboard");
   };
 
@@ -45,7 +47,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <TopNavbar loginToken={loginToken} />
       <section className="bg-slate-500 h-screen flex justify-center items-center">
         <div className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm">
           <h2 className="text-4xl text-white mb-4"><b>Sign In</b></h2>

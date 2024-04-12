@@ -67,7 +67,7 @@ export default function LandingPage() {
       </div>
       <div>
         <LandingPageText
-          words={"hello there, isn't it a depression detection page"}
+          words={"Let's begin with detection"}
         />
       </div>
       <div className="w-full h-40 mt-32">

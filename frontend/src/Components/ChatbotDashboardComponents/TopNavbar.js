@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import moment from "moment";
 
 export default function TopNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loginToken, setLoginToken] = useState("");
+  const [userInitials, setUserInitials] = useState("");
+  const [lastLoginTime, setLastLoginTime] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("loginToken");
+    const username = localStorage.getItem("username");
+    const lastLogin = localStorage.getItem("lastLogin");
     if (token) {
       setLoginToken(token);
+    }
+    if (username) {
+      const initials = extractInitials(username);
+      setUserInitials(initials);
+    }
+    if (lastLogin) {
+      const formattedLastLogin = moment(lastLogin).fromNow();
+      setLastLoginTime(formattedLastLogin);
     }
   }, []);
 
@@ -21,14 +34,27 @@ export default function TopNavbar() {
   const handleLogout = async () => {
     try {
       const headers = {
-        Authorization: `Token ${loginToken}`
+        Authorization: `Token ${loginToken}`,
       };
-      await axios.post("http://127.0.0.1:8000/chat_auth/api/logout/", null, { headers });
-      localStorage.removeItem('loginToken');
+      await axios.post("http://127.0.0.1:8000/chat_auth/api/logout/", null, {
+        headers,
+      });
+      localStorage.removeItem("loginToken");
+      localStorage.removeItem("username");
+      localStorage.removeItem("lastLogin");
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
+  };
+
+  const extractInitials = (name) => {
+    const nameArray = name.split(" ");
+    const initials = nameArray
+      .map((part) => part.charAt(0))
+      .join("")
+      .toUpperCase();
+    return initials;
   };
 
   return (
@@ -46,26 +72,13 @@ export default function TopNavbar() {
             data-twe-dropdown-toggle-ref
             aria-expanded={isDropdownOpen ? "true" : "false"}
           >
-            <img
-              src="https://tecdn.b-cdn.net/img/Photos/Avatars/img (31).webp"
-              className="rounded-full"
-              style={{ height: "35px", width: "35px" }}
-              alt="Avatar"
-              loading="lazy"
-            />
             <span className="ps-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="[&gt;svg]:w-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
+              {lastLoginTime && (
+                <span className="text-white text-sm mr-3">{lastLoginTime}</span>
+              )}
+            </span>
+            <span className="rounded-full bg-gray-400 h-8 w-8 flex items-center justify-center text-white font-bold">
+              {userInitials}
             </span>
           </button>
           <ul
@@ -77,7 +90,7 @@ export default function TopNavbar() {
           >
             <li>
               <a
-                href="#"
+                href="/profile"
                 className="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-zinc-200/60 focus:bg-zinc-200/60 focus:outline-none active:bg-zinc-200/60 active:no-underline dark:bg-surface-dark dark:text-white dark:hover:bg-neutral-800/25 dark:focus:bg-neutral-800/25 dark:active:bg-neutral-800/25"
                 data-twe-dropdown-item-ref
               >

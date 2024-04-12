@@ -120,30 +120,20 @@ export default function SideNavbar() {
         </div>
       )}
       <div>
-        <div
-          className="absolute top-2 left-2 bg-gray-700 rounded-full p-2 cursor-pointer"
-          onClick={toggleSidebar}
-        >
-          <div className="absolute left-2 bg-gray-700 rounded-full p-2 cursor-pointer flex items-center">
+          <div className="absolute left-2 bg-gray-700 rounded-full p-2 cursor-pointer flex items-center" onClick={toggleSidebar}>
             <img
               src={logo}
               alt="Emowell Logo"
-              className="h-8 w-auto rounded-full mr-2"
+              className="h-8 w-10 rounded-full mr-2"
             />
             <span className="text-white text-xl font-serif font-bold">Emowell</span>
           </div>
         </div>
-        <button
-          className="lg:hidden absolute top-2 left-16 bg-gray-700 rounded-full p-2"
-          onClick={toggleSidebar}
-        >
           {collapsed ? (
             <i className="bx bx-menu text-white text-3xl"></i>
           ) : (
             <i className="bx bx-x text-white text-3xl"></i>
           )}
-        </button>
       </div>
-    </div>
   );
 }

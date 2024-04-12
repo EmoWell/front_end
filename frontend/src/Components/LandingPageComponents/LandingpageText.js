@@ -4,7 +4,8 @@ import { cn } from "../../Utilities/cn";
 
 export const LandingPageText = ({ words, className }) => {
   const [scope, animate] = useAnimate();
-  let wordsArray = typeof words === "string" ? words.split(" ") : [];
+  const wordsArray = words.split(" ");
+  console.log("words", wordsArray);
   useEffect(() => {
     animate(
       "span",
@@ -12,11 +13,11 @@ export const LandingPageText = ({ words, className }) => {
         opacity: 1,
       },
       {
-        duration: 2,
+        duration: 20,
         delay: stagger(0.2),
       }
     );
-  }, [scope.current, wordsArray]);
+  }, [scope.current, words]);
 
   const renderWords = () => {
     return (
@@ -26,7 +27,6 @@ export const LandingPageText = ({ words, className }) => {
             <motion.span
               key={word + idx}
               className="dark:text-white text-white opacity-0"
-              exit={{ opacity: 0 }}
             >
               {word}
             </motion.span>
