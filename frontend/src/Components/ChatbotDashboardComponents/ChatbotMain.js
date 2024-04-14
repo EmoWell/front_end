@@ -33,42 +33,6 @@ export default function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleMessageSubmit = (e) => {
-    e.preventDefault();
-    if (inputValue.trim() === "") return;
-
-    if (currentQuestionIndex === 0) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: inputValue, sender: "user" },
-      ]);
-    } else {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: inputValue, sender: "user" },
-      ]);
-
-      const currentQuestionId = questions[currentQuestionIndex].id;
-      const userId = localStorage.getItem('userId'); // Retrieve user_id from local storage
-      const userResponse = {
-        question_id: currentQuestionId,
-        response_text: inputValue,
-        user: userId
-      };
-
-      axios.post("http://127.0.0.1:8000/phq/api/responses/", userResponse)
-        .then((response) => {
-          console.log("User response sent to the database:", response.data);
-        })
-        .catch((error) => {
-          console.error("Error sending user response to the database:", error);
-        });
-    }
-
-    setInputValue("");
-    handleNextQuestion();
-  };
-
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length) {
       setMessages((prevMessages) => [
@@ -77,10 +41,48 @@ export default function Chatbot() {
       ]);
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     } else {
-      console.log("All questions answered");
+      const userId = localStorage.getItem('userId');
+      const localResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
+  
+      const responses = localResponses.map(response => ({
+        question_id: response.question_id,
+        response_text: response.response_text,
+        user: userId
+      }));
+  
+      axios.post("http://127.0.0.1:8000/phq/api/responses/", {
+          user: userId,
+          responses: responses
+        })
+        .then((response) => {
+          console.log("All responses sent to the database:", response.data);
+          localStorage.removeItem('userResponses'); // Clear stored responses after sending
+        })
+        .catch((error) => {
+          console.error("Error sending responses to the database:", error);
+        });
     }
   };
-
+  
+  const handleMessageSubmit = (e) => {
+    e.preventDefault();
+    if (inputValue.trim() === "") return;
+  
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: inputValue, sender: "user" },
+    ]);
+  
+    const currentQuestionId = questions[currentQuestionIndex].id;
+    const localResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
+    localResponses.push({ question_id: currentQuestionId, response_text: inputValue });
+    localStorage.setItem('userResponses', JSON.stringify(localResponses));
+  
+    setInputValue("");
+    handleNextQuestion();
+  };
+  
+  
   if (loading) {
     return <div>Loading...</div>;
   }

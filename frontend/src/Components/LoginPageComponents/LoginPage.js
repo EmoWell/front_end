@@ -21,12 +21,16 @@ export default function LoginPage() {
   };
 
   const handleLoginSuccess = (data) => {
-    const { token, full_name, last_login } = data;
-    setLoginToken(token); 
+    const {
+      token,
+      user: { username: full_name, last_login,id },
+    } = data;
+    setLoginToken(token);
+    localStorage.setItem("user_id", id);
     localStorage.setItem("loginToken", token);
     console.log("loginToken", token);
     localStorage.setItem("username", full_name);
-    localStorage.setItem("lastLogin",last_login)
+    localStorage.setItem("lastLogin", last_login);
     navigate("/chatbot-dashboard");
   };
 
@@ -49,7 +53,9 @@ export default function LoginPage() {
     <>
       <section className="bg-slate-500 h-screen flex justify-center items-center">
         <div className="bg-slate-700 p-8 rounded-lg shadow-lg w-full max-w-sm">
-          <h2 className="text-4xl text-white mb-4"><b>Sign In</b></h2>
+          <h2 className="text-4xl text-white mb-4">
+            <b>Sign In</b>
+          </h2>
           <div className="space-y-4">
             {error && <div className="text-red-500">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -77,7 +83,9 @@ export default function LoginPage() {
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-white">New User???</p>
-                <a href="/signup" className="text-blue-500">Signup</a>
+                <a href="/signup" className="text-blue-500">
+                  Signup
+                </a>
               </div>
               <div className="flex flex-col">
                 <input
