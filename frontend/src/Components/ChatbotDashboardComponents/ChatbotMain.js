@@ -7,6 +7,7 @@ export default function Chatbot() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [allowUserInput, setAllowUserInput] = useState(false); // Flag to allow user input
   const messagesEndRef = useRef(null);
   const [responses, setResponses] = useState([]);
 
@@ -18,7 +19,12 @@ export default function Chatbot() {
         );
         setQuestions(response.data);
         setLoading(false);
-        setMessages([{ text: "Hey, how are you today?", sender: "bot" }]);
+        if (response.data.length > 0) {
+          setMessages([
+            { text: response.data[0].question_text, sender: "bot" },
+          ]);
+          setCurrentQuestionIndex(1);
+        }
       } catch (error) {
         console.error("Error fetching questions:", error);
         setLoading(false);
@@ -26,19 +32,24 @@ export default function Chatbot() {
     };
     initConversation();
   }, []);
-
   useEffect(() => {
     scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    if (messages.length > 0 && messages[0].sender === "bot") {
+      setAllowUserInput(true);
+    }
   }, [messages]);
 
   useEffect(() => {
     const handleLastQuestionResponse = () => {
       if (currentQuestionIndex === questions.length) {
         if (inputValue.trim() !== "") {
-          const currentQuestionId = questions[currentQuestionIndex].id;
+          const lastQuestionId = questions[currentQuestionIndex - 1].id;
           setResponses([
             ...responses,
-            { question_id: currentQuestionId, response_text: inputValue },
+            { question_id: lastQuestionId, response_text: inputValue },
           ]);
           console.log("responses", responses);
           submitResponses();
@@ -77,9 +88,9 @@ export default function Chatbot() {
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length) {
       if (currentQuestionIndex >= 0) {
-        const currentQuestionId = questions[currentQuestionIndex].id;
-        setResponses([
-          ...responses,
+        const currentQuestionId = questions[currentQuestionIndex - 1].id;
+        setResponses((prevResponses) => [
+          ...prevResponses,
           { question_id: currentQuestionId, response_text: inputValue },
         ]);
         console.log("responses", responses);
@@ -95,10 +106,18 @@ export default function Chatbot() {
     } else {
       const user_id = localStorage.getItem("user_id");
 
+      // Include the response for the last question
+      const lastQuestionId = questions[currentQuestionIndex - 1].id;
+      const lastResponse = {
+        question_id: lastQuestionId,
+        response_text: inputValue,
+      };
+
+      // Submit responses including the last response
       axios
         .post("http://127.0.0.1:8000/phq/api/responses/", {
           user: user_id,
-          responses: responses,
+          responses: [...responses, lastResponse],
         })
         .then((response) => {
           console.log("All responses sent to the database:", response.data);
@@ -114,7 +133,7 @@ export default function Chatbot() {
 
   const handleMessageSubmit = (e) => {
     e.preventDefault();
-    if (inputValue.trim() === "") return;
+    if (!allowUserInput || inputValue.trim() === "") return;
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -129,7 +148,6 @@ export default function Chatbot() {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="flex-1 overflow-y-auto w-full mt-16 mb-16">
       <div className="flex-1 overflow-auto">
