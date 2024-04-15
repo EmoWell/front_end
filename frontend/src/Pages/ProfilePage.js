@@ -18,6 +18,8 @@ export default function Profile() {
     }
   }, []);
 
+  const storedEmail = localStorage.getItem("email");
+
   const getInitials = (name) => {
     const nameArray = name.split(" ");
     const initials = nameArray
@@ -79,28 +81,16 @@ export default function Profile() {
                   <label className="block text-gray-700 font-semibold mb-1">
                     Email:
                   </label>
-                  <p className="text-gray-700">email@gmail.com</p>
+                  <p className="text-gray-700">{storedEmail}</p>
                 </div>
               </div>
             </div>
 
             <div className="bg-white p-3 shadow-sm rounded-md mt-4">
               <div className="text-lg font-semibold mb-2">
-                Experience and Education
+                Interests 
               </div>
               <div>
-                <h3 className="text-gray-800 font-semibold">Work Experience</h3>
-                <ul className="list-disc list-inside">
-                  <li>Company A - Web Developer (2018-2020)</li>
-                  <li>Company B - Frontend Developer (2020-Present)</li>
-                </ul>
-              </div>
-              <div className="mt-4">
-                <h3 className="text-gray-800 font-semibold">Education</h3>
-                <ul className="list-disc list-inside">
-                  <li>University A - Bachelor's in Computer Science</li>
-                  <li>University B - Master's in Software Engineering</li>
-                </ul>
               </div>
             </div>
           </div>

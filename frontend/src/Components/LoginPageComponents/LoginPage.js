@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import TopNavbar from "../ChatbotDashboardComponents/TopNavbar";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -23,14 +22,14 @@ export default function LoginPage() {
   const handleLoginSuccess = (data) => {
     const {
       token,
-      user: { username: full_name, last_login,id },
+      user: { username: full_name, last_login, id, email },
     } = data;
     setLoginToken(token);
     localStorage.setItem("user_id", id);
     localStorage.setItem("loginToken", token);
-    console.log("loginToken", token);
     localStorage.setItem("username", full_name);
     localStorage.setItem("lastLogin", last_login);
+    localStorage.setItem("email", email);
     navigate("/chatbot-dashboard");
   };
 
