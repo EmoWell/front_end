@@ -8,11 +8,14 @@ export default function Chatbot() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+  const [responses, setResponses] = useState([]);
 
   useEffect(() => {
     const initConversation = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/phq/api/questions/");
+        const response = await axios.get(
+          "http://127.0.0.1:8000/phq/api/questions/"
+        );
         setQuestions(response.data);
         setLoading(false);
         setMessages([{ text: "Hey, how are you today?", sender: "bot" }]);
@@ -21,7 +24,6 @@ export default function Chatbot() {
         setLoading(false);
       }
     };
-
     initConversation();
   }, []);
 
@@ -29,60 +31,101 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    const handleLastQuestionResponse = () => {
+      if (currentQuestionIndex === questions.length) {
+        if (inputValue.trim() !== "") {
+          const currentQuestionId = questions[currentQuestionIndex].id;
+          setResponses([
+            ...responses,
+            { question_id: currentQuestionId, response_text: inputValue },
+          ]);
+          console.log("responses", responses);
+          submitResponses();
+        }
+      }
+    };
+
+    handleLastQuestionResponse();
+
+    return () => {
+      handleLastQuestionResponse();
+    };
+  }, [currentQuestionIndex]);
+
+  const submitResponses = () => {
+    const userId = localStorage.getItem("user_id");
+
+    axios
+      .post("http://127.0.0.1:8000/phq/api/responses/", {
+        user: userId,
+        responses: responses,
+      })
+      .then((response) => {
+        console.log("All responses sent to the database:", response.data);
+        setMessages([{ text: "Thank you for your responses!", sender: "bot" }]);
+      })
+      .catch((error) => {
+        console.error("Error sending responses to the database:", error);
+      });
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length) {
+      if (currentQuestionIndex >= 0) {
+        const currentQuestionId = questions[currentQuestionIndex].id;
+        setResponses([
+          ...responses,
+          { question_id: currentQuestionId, response_text: inputValue },
+        ]);
+        console.log("responses", responses);
+      }
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: questions[currentQuestionIndex].question_text, sender: "bot" },
+        {
+          text: questions[currentQuestionIndex].question_text,
+          sender: "bot",
+        },
       ]);
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     } else {
-      const userId = localStorage.getItem('userId');
-      const localResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
-  
-      const responses = localResponses.map(response => ({
-        question_id: response.question_id,
-        response_text: response.response_text,
-        user: userId
-      }));
-  
-      axios.post("http://127.0.0.1:8000/phq/api/responses/", {
-          user: userId,
-          responses: responses
+      const user_id = localStorage.getItem("user_id");
+
+      axios
+        .post("http://127.0.0.1:8000/phq/api/responses/", {
+          user: user_id,
+          responses: responses,
         })
         .then((response) => {
           console.log("All responses sent to the database:", response.data);
-          localStorage.removeItem('userResponses'); // Clear stored responses after sending
+          setMessages([
+            { text: "Thank you for your responses!", sender: "bot" },
+          ]);
         })
         .catch((error) => {
           console.error("Error sending responses to the database:", error);
         });
     }
   };
-  
+
   const handleMessageSubmit = (e) => {
     e.preventDefault();
     if (inputValue.trim() === "") return;
-  
+
     setMessages((prevMessages) => [
       ...prevMessages,
       { text: inputValue, sender: "user" },
     ]);
-  
-    const currentQuestionId = questions[currentQuestionIndex].id;
-    const localResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
-    localResponses.push({ question_id: currentQuestionId, response_text: inputValue });
-    localStorage.setItem('userResponses', JSON.stringify(localResponses));
-  
+
     setInputValue("");
+    console.log(currentQuestionIndex + 1);
     handleNextQuestion();
   };
-  
-  
+
   if (loading) {
     return <div>Loading...</div>;
   }
