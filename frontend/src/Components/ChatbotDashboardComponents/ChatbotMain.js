@@ -105,14 +105,11 @@ export default function Chatbot() {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     } else {
       const user_id = localStorage.getItem("user_id");
-
+  
       // Include the response for the last question
       const lastQuestionId = questions[currentQuestionIndex - 1].id;
-      const lastResponse = {
-        question_id: lastQuestionId,
-        response_text: inputValue,
-      };
-
+      const lastResponse = { question_id: lastQuestionId, response_text: inputValue };
+  
       // Submit responses including the last response
       axios
         .post("http://127.0.0.1:8000/phq/api/responses/", {
@@ -130,6 +127,7 @@ export default function Chatbot() {
         });
     }
   };
+    
 
   const handleMessageSubmit = (e) => {
     e.preventDefault();
