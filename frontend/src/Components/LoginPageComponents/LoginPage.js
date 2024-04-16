@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { TailSpin } from "react-loader-spinner";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -8,7 +9,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState(null);
-  const [loginToken, setLoginToken] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,7 +25,6 @@ export default function LoginPage() {
       token,
       user: { username: full_name, last_login, id, email },
     } = data;
-    setLoginToken(token);
     localStorage.setItem("user_id", id);
     localStorage.setItem("loginToken", token);
     localStorage.setItem("username", full_name);
@@ -35,6 +35,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/chat_auth/api/login/",
@@ -45,6 +46,8 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Login failed:", error);
       setError("Invalid username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,12 +89,25 @@ export default function LoginPage() {
                   Signup
                 </a>
               </div>
-              <div className="flex flex-col">
-                <input
+              <div className="flex flex-col" style={{ minHeight: "40px" }}>
+                <button
                   type="submit"
-                  value="Login"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer"
-                />
+                  className="bg-blue-500 text-white px-4 h-10 rounded-md cursor-pointer relative flex items-center justify-center"
+                  disabled={loading}
+                >
+                  {loading && (
+                    <div className="absolute z-40 flex items-center justify-center">
+                      <TailSpin
+                        height={16}
+                        width={16}
+                        color="#fff"
+                        secondaryColor="#fff"
+                        strokeWidth={6}
+                      />
+                    </div>
+                  )}
+                  {loading ? "" : "Login"}
+                </button>
               </div>
             </form>
           </div>

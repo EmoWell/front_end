@@ -36,9 +36,7 @@ export default function TopNavbar() {
       await axios.post("http://127.0.0.1:8000/chat_auth/api/logout/", null, {
         headers,
       });
-      localStorage.removeItem("loginToken");
-      localStorage.removeItem("username");
-      localStorage.removeItem("lastLogin");
+      localStorage.clear();
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
