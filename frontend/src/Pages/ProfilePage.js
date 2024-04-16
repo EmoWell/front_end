@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import SideNavbar from "../Components/ChatbotDashboardComponents/SideNavbar";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Profile() {
   const [fullName, setFullName] = useState("");
   const [userInitials, setUserInitials] = useState("");
-  const [age, setAge] = useState(null);
+  const [Dob, setDob] = useState(null);
   const [gender, setGender] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
   const profilePictureColor = "gray-400";
 
   useEffect(() => {
@@ -20,6 +23,19 @@ export default function Profile() {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUserInitials(getInitials(storedUsername));
+    }
+
+    const storedDob = localStorage.getItem("profileDob");
+    const storedGender = localStorage.getItem("profileGender");
+    const storedPhoneNumber = localStorage.getItem("profilePhoneNumber");
+    if (storedDob) {
+      setDob(new Date(storedDob));
+    }
+    if (storedGender) {
+      setGender(storedGender);
+    }
+    if (storedPhoneNumber) {
+      setPhoneNumber(storedPhoneNumber);
     }
   }, []);
 
@@ -39,31 +55,19 @@ export default function Profile() {
   };
 
   const handleSaveClick = () => {
-    localStorage.setItem("profileAge", age);
+    localStorage.setItem("profileDob", Dob);
     localStorage.setItem("profileGender", gender);
     localStorage.setItem("profilePhoneNumber", phoneNumber);
-    setIsEditing(false); 
+    setIsEditing(false);
   };
-  
-  useEffect(() => {
-    const storedAge = localStorage.getItem("profileAge");
-    const storedGender = localStorage.getItem("profileGender");
-    const storedPhoneNumber = localStorage.getItem("profilePhoneNumber");
-    if (storedAge) {
-      setAge(storedAge);
-    }
-    if (storedGender) {
-      setGender(storedGender);
-    }
-    if (storedPhoneNumber) {
-      setPhoneNumber(storedPhoneNumber);
-    }
-  }, []);
 
   return (
     <div className="flex">
       <SideNavbar />
-      <div className="min-h-screen relative right-0">
+      <div
+        className="min-h-screen relative right-0"
+        style={{ width: "-webkit-fill-available" }}
+      >
         <div className="w-full text-white bg-main-color">
           <div className="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
             <div className="py-4 mx-auto">
@@ -75,7 +79,7 @@ export default function Profile() {
         <div className="container mx-auto my-5 p-5">
           <div className="md:flex no-wrap md:-mx-2 ">
             <div className="w-full md:w-3/12 md:mx-2  min-w-72 min-h-80">
-              <div className="bg-white p-3 rounded-md items-center">
+              <div className="bg-white p-3 rounded-md items-center h-full">
                 <div className="text-lg font-semibold mb-2">Profile</div>
                 <div className="flex justify-center">
                   <svg
@@ -98,51 +102,48 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="bg-white p-3 shadow-sm rounded-md mt-4">
+            <div className="bg-white p-3 shadow-sm rounded-md w-full">
               <div className="text-lg font-semibold mb-2 flex justify-between">
                 <span>About</span>
-                {!isEditing && (
-                  <button
-                    className="text-blue-500 underline"
-                    onClick={handleEditClick}
-                  >
-                    Edit
-                  </button>
-                )}
               </div>
               <div className="flex flex-wrap">
-                <div className="w-full md:w-1/2">
+                <div className="w-full md:w-1/2 mt-2">
                   <label className="block text-gray-700 font-semibold mb-1">
-                    Age:
+                    Date of Birth:
                   </label>
                   {!isEditing ? (
-                    <p className="text-gray-700">{age || "N/A"}</p>
+                    <p className="text-gray-700">
+                      {Dob ? new Date(Dob).toLocaleDateString() : "N/A"}
+                    </p>
                   ) : (
-                    <input
-                      type="text"
+                    <DatePicker
+                      selected={Dob ? new Date(Dob) : null}
+                      onChange={(date) => setDob(date)}
                       className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
-                      value={age || ""}
-                      onChange={(e) => setAge(e.target.value)}
                     />
                   )}
                 </div>
-                <div className="w-full md:w-1/2">
+                <div className="w-full md:w-1/2 mt-2">
                   <label className="block text-gray-700 font-semibold mb-1">
                     Sex:
                   </label>
                   {!isEditing ? (
                     <p className="text-gray-700">{gender || "N/A"}</p>
                   ) : (
-                    <input
-                      type="text"
+                    <select
                       className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
                       value={gender || ""}
                       onChange={(e) => setGender(e.target.value)}
-                    />
+                    >
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
                   )}
                 </div>
                 <div className="w-full md:w-1/2">
-                  <label className="block text-gray-700 font-semibold mb-1">
+                  <label className="block text-gray-700 font-semibold mt-12">
                     Contact:
                   </label>
                   {!isEditing ? (
@@ -157,14 +158,14 @@ export default function Profile() {
                   )}
                 </div>
                 <div className="w-full md:w-1/2">
-                  <label className="block text-gray-700 font-semibold mb-1">
+                  <label className="block text-gray-700 font-semibold mt-12">
                     Email:
                   </label>
                   <p className="text-gray-700">{storedEmail}</p>
                 </div>
               </div>
               {isEditing && (
-                <div className="flex justify-end mt-3">
+                <div className="flex justify-center mt-4">
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer mr-2"
                     onClick={handleSaveClick}
@@ -179,6 +180,16 @@ export default function Profile() {
                   </button>
                 </div>
               )}
+              <div className="w-full flex justify-center items-left mt-16">
+                {!isEditing && (
+                  <button
+                    className="text-white bg-blue-600 w-36 h-10 rounded-lg shadow-md"
+                    onClick={handleEditClick}
+                  >
+                    Edit
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

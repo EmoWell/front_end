@@ -47,7 +47,7 @@ export default function TopNavbar() {
     <div className="min-h-screen flex flex-row bg-slate-900 overflow-hidden">
       {!collapsed && (
         <div className="flex flex-col w-56 bg-slate-700">
-          <ul className="flex flex-col py-4 h-full bg-slate-700 w-56 pt-16">
+          <ul className="flex flex-col mt-4 py-4 h-full bg-slate-700 w-56 pt-16">
             <li>
               <a
                 href="/chatbot-dashboard"
@@ -175,7 +175,7 @@ export default function TopNavbar() {
       )}
       <div>
         <div
-          className="absolute left-2 bg-gray-700 rounded-full p-2 cursor-pointer flex items-center"
+          className="absolute left-2 bg-gray-700  mt-6 rounded-full p-2 cursor-pointer flex items-center"
           onClick={toggleSidebar}
         >
           <img
