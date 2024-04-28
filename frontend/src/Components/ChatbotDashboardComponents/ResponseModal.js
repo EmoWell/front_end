@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 export default function ResponseModal({ onClose }) {
-  const handleYesClick = () => {
+  const [modalText, setModalText] = useState("Thanking you for taking the test");
+  const userId = localStorage.getItem("user_id");
+
+  const handleViewScoreClick = () => {
+    axios.get(`http://127.0.0.1:8000/phq/api/score/${userId}/`)
+      .then(response => {
+        const score = response.data.score;
+        setModalText(`Your score: ${score}`);
+      })
+      .catch(error => {
+        console.error("Error fetching score:", error);
+        setModalText("Failed to fetch score");
+      });
+  };
+
+  const handleCloseClick = () => {
     onClose();
   };
+
   return (
     <div>
       <div
@@ -52,15 +69,26 @@ export default function ResponseModal({ onClose }) {
                 />
               </svg>
               <h3 className="mb-5 text-lg font-normal text-gray-500">
-                Thanking you for taking the test
+                {modalText}
               </h3>
-              <button
-                type="button"
-                className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"
-                onClick={handleYesClick}
-              >
-                View detailed report
-              </button>
+              {modalText !== "Thanking you for taking the test" && (
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"
+                  onClick={handleCloseClick}
+                >
+                  Close
+                </button>
+              )}
+              {modalText === "Thanking you for taking the test" && (
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"
+                  onClick={handleViewScoreClick}
+                >
+                  View your score
+                </button>
+              )}
             </div>
           </div>
         </div>

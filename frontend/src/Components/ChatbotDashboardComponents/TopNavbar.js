@@ -8,17 +8,19 @@ export default function TopNavbar() {
   const [userInitials, setUserInitials] = useState("");
   const [lastLoginTime, setLastLoginTime] = useState("");
   const navigate = useNavigate();
+  const first_name = localStorage.getItem("first_name");
+  const last_name = localStorage.getItem("last_name");
+  const initials = first_name && last_name ? `${first_name[0].toUpperCase()}${last_name[0].toUpperCase()}` : "";
 
   useEffect(() => {
     const token = localStorage.getItem("loginToken");
-    const username = localStorage.getItem("username");
     const lastLogin = localStorage.getItem("lastLogin");
     if (token) {
       setLoginToken(token);
     }
-    if (username) {
-      const initials = extractInitials(username);
-      setUserInitials(initials);
+    if (initials) {
+      const extractedInitials = extractInitials(initials);
+      setUserInitials(extractedInitials);
     }
     if (lastLogin) {
       const formattedLastLogin = moment(lastLogin).fromNow();
@@ -58,7 +60,7 @@ export default function TopNavbar() {
               )}
             </span>
             <span className="rounded-full bg-gray-400 h-8 w-8 flex items-center justify-center text-white font-bold">
-              {userInitials}
+              {initials}
             </span>
           </button>
         </div>
