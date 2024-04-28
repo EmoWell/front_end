@@ -23,14 +23,15 @@ export default function LoginPage() {
   const handleLoginSuccess = (data) => {
     const {
       token,
-      user: { username: full_name, last_login, id, email },
+      user: { username: first_name,last_name, last_login, id, email },
     } = data;
     localStorage.setItem("user_id", id);
     localStorage.setItem("loginToken", token);
-    localStorage.setItem("username", full_name);
+    localStorage.setItem("first_name", first_name);
+    localStorage.setItem("last_name", last_name);
     localStorage.setItem("lastLogin", last_login);
     localStorage.setItem("email", email);
-    navigate("/chatbot-dashboard");
+    navigate("/dashboard");
   };
 
   const handleSubmit = async (e) => {

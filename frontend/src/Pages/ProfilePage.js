@@ -1,55 +1,40 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
+import _ from 'lodash';
 import SideNavbar from "../Components/ChatbotDashboardComponents/SideNavbar";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function Profile() {
-  const [fullName, setFullName] = useState("");
-  const [userInitials, setUserInitials] = useState("");
   const [Dob, setDob] = useState(null);
   const [gender, setGender] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [profileCompletion, setProfileCompletion] = useState(25);
   const [isEditing, setIsEditing] = useState(false);
-  const profilePictureColor = "gray-400";
-
+  const profilePictureColor = "#ced4da";
+  const storedFirstName = localStorage.getItem("first_name");
+  const storedLastName = localStorage.getItem("last_name");
+  const storedFullName = storedFirstName && storedLastName ? `${_.capitalize(storedFirstName)} ${_.capitalize(storedLastName)}` : "";
+  
   useEffect(() => {
-    const storedFullName = localStorage.getItem("username");
-    if (storedFullName) {
-      setFullName(storedFullName);
-      setUserInitials(getInitials(storedFullName));
-    }
-
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      setUserInitials(getInitials(storedUsername));
-    }
-
     const storedDob = localStorage.getItem("profileDob");
     const storedGender = localStorage.getItem("profileGender");
     const storedPhoneNumber = localStorage.getItem("profilePhoneNumber");
     if (storedDob) {
       setDob(new Date(storedDob));
+      updateProfileCompletion(25);
     }
     if (storedGender) {
       setGender(storedGender);
+      updateProfileCompletion(25);
     }
     if (storedPhoneNumber) {
       setPhoneNumber(storedPhoneNumber);
+      updateProfileCompletion(25); 
     }
   }, []);
 
   const storedEmail = localStorage.getItem("email");
-
-  const getInitials = (name) => {
-    const nameArray = name.split(" ");
-    const initials = nameArray
-      .map((part) => part.charAt(0))
-      .join("")
-      .toUpperCase();
-    return initials;
-  };
-
   const handleEditClick = () => {
     setIsEditing(true);
   };
@@ -59,6 +44,10 @@ export default function Profile() {
     localStorage.setItem("profileGender", gender);
     localStorage.setItem("profilePhoneNumber", phoneNumber);
     setIsEditing(false);
+  };
+
+  const updateProfileCompletion = (increaseBy) => {
+    setProfileCompletion(prevCompletion => Math.min(100, prevCompletion + increaseBy)); 
   };
 
   return (
@@ -89,14 +78,14 @@ export default function Profile() {
                     className="w-36 h-36 align-middle"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                 </div>
                 <div className="text-center">
-                  <h2 className="text-xl font-semibold">{fullName}</h2>
+                  <h2 className="text-xl font-semibold">{storedFullName}</h2>
                   <p className="text-gray-600">Student</p>
                 </div>
               </div>
@@ -118,7 +107,7 @@ export default function Profile() {
                   ) : (
                     <DatePicker
                       selected={Dob ? new Date(Dob) : null}
-                      onChange={(date) => setDob(date)}
+                      onChange={(date) => { setDob(date); updateProfileCompletion(25); }}
                       className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
                     />
                   )}
@@ -133,7 +122,7 @@ export default function Profile() {
                     <select
                       className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
                       value={gender || ""}
-                      onChange={(e) => setGender(e.target.value)}
+                      onChange={(e) => { setGender(e.target.value); updateProfileCompletion(25); }}
                     >
                       <option value="">Select</option>
                       <option value="Male">Male</option>
@@ -153,7 +142,7 @@ export default function Profile() {
                       type="text"
                       className="border border-gray-300 px-3 py-2 rounded-md shadow-lg"
                       value={phoneNumber || ""}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      onChange={(e) => { setPhoneNumber(e.target.value); updateProfileCompletion(25); }}
                     />
                   )}
                 </div>

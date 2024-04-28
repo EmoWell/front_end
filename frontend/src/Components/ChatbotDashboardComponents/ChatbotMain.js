@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import ResponseModal from "./ResponseModal";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([]);
@@ -7,9 +8,10 @@ export default function Chatbot() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [allowUserInput, setAllowUserInput] = useState(false); // Flag to allow user input
-  const messagesEndRef = useRef(null);
+  const [allowUserInput, setAllowUserInput] = useState(false);
   const [responses, setResponses] = useState([]);
+  const [showResponseModal, setShowResponseModal] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const initConversation = async () => {
@@ -32,6 +34,7 @@ export default function Chatbot() {
     };
     initConversation();
   }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -51,6 +54,7 @@ export default function Chatbot() {
             ...responses,
             { question_id: lastQuestionId, response_text: inputValue },
           ]);
+          setAllowUserInput(false);
           console.log("responses", responses);
           submitResponses();
         }
@@ -74,7 +78,8 @@ export default function Chatbot() {
       })
       .then((response) => {
         console.log("All responses sent to the database:", response.data);
-        setMessages([{ text: "Thank you for your responses!", sender: "bot" }]);
+        setShowResponseModal(true);
+        setAllowUserInput(false);
       })
       .catch((error) => {
         console.error("Error sending responses to the database:", error);
@@ -105,12 +110,12 @@ export default function Chatbot() {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
     } else {
       const user_id = localStorage.getItem("user_id");
-  
-      // Include the response for the last question
       const lastQuestionId = questions[currentQuestionIndex - 1].id;
-      const lastResponse = { question_id: lastQuestionId, response_text: inputValue };
-  
-      // Submit responses including the last response
+      const lastResponse = {
+        question_id: lastQuestionId,
+        response_text: inputValue,
+      };
+
       axios
         .post("http://127.0.0.1:8000/phq/api/responses/", {
           user: user_id,
@@ -118,16 +123,14 @@ export default function Chatbot() {
         })
         .then((response) => {
           console.log("All responses sent to the database:", response.data);
-          setMessages([
-            { text: "Thank you for your responses!", sender: "bot" },
-          ]);
+          setShowResponseModal(true);
+          setAllowUserInput(false);
         })
         .catch((error) => {
           console.error("Error sending responses to the database:", error);
         });
     }
   };
-    
 
   const handleMessageSubmit = (e) => {
     e.preventDefault();
@@ -146,6 +149,7 @@ export default function Chatbot() {
   if (loading) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className="flex-1 overflow-y-auto w-full mt-16 mb-16">
       <div className="flex-1 overflow-auto">
@@ -169,24 +173,29 @@ export default function Chatbot() {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <form
-        onSubmit={handleMessageSubmit}
-        className="flex items-center p-2 fixed bottom-0 right-0 w-full rounded-lg ml-24 bg-gray-800"
-      >
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className="flex-1 px-3 py-2 border border-gray-800 rounded-md focus:outline-none focus:border-gray-500 text-white bg-gray-800"
-          placeholder="Type a message..."
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 ml-1 bg-gray-700 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+      {allowUserInput && (
+        <form
+          onSubmit={handleMessageSubmit}
+          className="flex items-center p-2 fixed bottom-0 right-0 w-full rounded-lg ml-24 bg-gray-800"
         >
-          Send
-        </button>
-      </form>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className="flex-1 px-3 py-2 border border-gray-800 rounded-md focus:outline-none focus:border-gray-500 text-white bg-gray-800"
+            placeholder="Type a message..."
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 ml-1 bg-gray-700 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+          >
+            Send
+          </button>
+        </form>
+      )}
+      {showResponseModal && (
+        <ResponseModal onClose={() => setShowResponseModal(false)} />
+      )}
     </div>
   );
 }

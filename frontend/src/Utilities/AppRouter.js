@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
-  Navigate,
 } from "react-router-dom";
 import ChatbotDashboard from "../Pages/ChatbotDashboard";
 import LandingPage from "../Pages/LandingPage";
 import LoginPage from "../Components/LoginPageComponents/LoginPage";
 import SignupPage from "../Components/SignupPageComponents/SignupPage";
 import Profile from "../Pages/ProfilePage";
+import FAQpage from "../Pages/FAQpage";
+import Dashboard from "../Pages/Dashboard";
 
 export default function AppRouter() {
   return (
@@ -21,6 +21,8 @@ export default function AppRouter() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/faqs" element={<FAQpage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

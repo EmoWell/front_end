@@ -1,7 +1,6 @@
 import React from "react";
 import Lamp1 from "../Components/LandingPageComponents/Lamp1";
 import { MovingCards } from "../Components/LandingPageComponents/MovingCards";
-import { LandingPageText } from "../Components/LandingPageComponents/LandingpageText";
 import GetStartedBtn from "../Components/LandingPageComponents/GetStartedBtn";
 import { Link } from "react-router-dom";
 
@@ -62,13 +61,8 @@ export default function LandingPage() {
   ];
   return (
     <div>
-      <div className="w-screen h-40">
+      <div className="w-screen h-56">
         <Lamp1 />
-      </div>
-      <div>
-        <LandingPageText
-          words={"Let's begin with detection"}
-        />
       </div>
       <div className="w-full h-40 mt-32">
         <MovingCards items={items} direction="right" speed="slow" />
