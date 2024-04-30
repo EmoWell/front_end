@@ -27,7 +27,12 @@ export default function ChatbotDashboard() {
             <Chatbot />
           ) : showQuestion ? (
             <div className="flex flex-col items-center mt-20 justify-center text-white  h-36 bg-slate-700 shadow-lg">
-              <h2 className="mb-4 text-center text-3xl text-bold">
+              <h2 className="mb-4 text-center text-xl text-bold">
+                We take this assessment based on the PHQ-9 questionnaire.
+                <br />
+                Please answer the asked questions in detail i.e., more than 20
+                words.
+                <br />
                 Do you want to take the assessment?
               </h2>
               <div className="flex gap-2">

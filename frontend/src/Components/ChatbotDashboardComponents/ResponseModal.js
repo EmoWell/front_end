@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 
 export default function ResponseModal({ onClose }) {
-  const [modalText, setModalText] = useState("Thanking you for taking the test");
+  const [modalText, setModalText] = useState(
+    "Thanking you for taking the test"
+  );
   const userId = localStorage.getItem("user_id");
 
   const handleViewScoreClick = () => {
-    axios.get(`http://127.0.0.1:8000/phq/api/score/${userId}/`)
-      .then(response => {
+    axios
+      .get(`http://127.0.0.1:8000/phq/api/score/${userId}/`)
+      .then((response) => {
         const score = response.data.score;
         setModalText(`Your score: ${score}`);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching score:", error);
         setModalText("Failed to fetch score");
       });
