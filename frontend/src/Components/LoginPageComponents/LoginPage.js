@@ -23,7 +23,7 @@ export default function LoginPage() {
   const handleLoginSuccess = (data) => {
     const {
       token,
-      user: { username: first_name,last_name, last_login, id, email },
+      user: { username, first_name,last_name, last_login, id, email },
     } = data;
     localStorage.setItem("user_id", id);
     localStorage.setItem("loginToken", token);
