@@ -1,27 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ResponseModal({ onClose }) {
-  const [modalText, setModalText] = useState(
-    "Thanking you for taking the test"
-  );
+  const [modalText, setModalText] = useState("Thanking you for taking the test");
+  const [phqScore, setPhqScore] = useState(0);
   const userId = localStorage.getItem("user_id");
+  const navigate = useNavigate(); 
 
-  const handleViewScoreClick = () => {
-    axios
-      .get(`http://127.0.0.1:8000/phq/api/score/${userId}/`)
-      .then((response) => {
-        const score = response.data.score;
-        setModalText(`Your score: ${score}`);
-      })
-      .catch((error) => {
-        console.error("Error fetching score:", error);
-        setModalText("Failed to fetch score");
-      });
-  };
+  useEffect(() => {
+    if (userId) {
+      axios
+        .get(`http://127.0.0.1:8000/phq/api/score/${userId}/`)
+        .then((response) => {
+          const score = response.data.score;
+          setPhqScore(score);
+          setModalText(`Your score: ${score}`);
+        })
+        .catch((error) => {
+          console.error("Error fetching score:", error);
+          setModalText("Failed to fetch score");
+        });
+    }
+  }, [userId]);
 
   const handleCloseClick = () => {
     onClose();
+  };
+
+  const handleBDIClick = () => {
+    navigate("/bdidash");
   };
 
   return (
@@ -74,6 +82,15 @@ export default function ResponseModal({ onClose }) {
               <h3 className="mb-5 text-lg font-normal text-gray-500">
                 {modalText}
               </h3>
+              {phqScore > 14 && (
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"
+                  onClick={handleBDIClick}
+                >
+                  Take BDI-2 Assessment
+                </button>
+              )}
               {modalText !== "Thanking you for taking the test" && (
                 <button
                   type="button"
@@ -81,15 +98,6 @@ export default function ResponseModal({ onClose }) {
                   onClick={handleCloseClick}
                 >
                   Close
-                </button>
-              )}
-              {modalText === "Thanking you for taking the test" && (
-                <button
-                  type="button"
-                  className="text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"
-                  onClick={handleViewScoreClick}
-                >
-                  View your score
                 </button>
               )}
             </div>

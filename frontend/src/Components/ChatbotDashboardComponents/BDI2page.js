@@ -203,6 +203,7 @@ export default function Chatbot2() {
   const [messages, setMessages] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
   const [showBDIModal, setShowBDIModal] = useState(false);
+  const [showOptions, setShowOptions] = useState(true); // State variable to manage options visibility
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const messagesEndRef = useRef(null);
 
@@ -262,6 +263,7 @@ export default function Chatbot2() {
       ]);
       setSelectedOption(questions[currentQuestionIndex + 1].options);
     } else {
+      setShowOptions(false); // Hide options when last question is answered
       setShowBDIModal(true);
     }
     scrollToBottom();
@@ -297,7 +299,7 @@ export default function Chatbot2() {
         </div>
       </div>
       <div className=" items-end p-2 fixed bottom-0 right-0">
-        {selectedOption.length > 0 && (
+        {showOptions && selectedOption.length > 0 && (
           <div className="max-h-60 overflow-y-auto flex flex-col">
             {selectedOption.map((option, index) => (
               <button

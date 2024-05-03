@@ -1,12 +1,10 @@
-import './App.css';
-import Questionnaire from './Components/ChatbotDashboardComponents/ChatBot';
-import AppRouter from './Utilities/AppRouter';
+import "./App.css";
+import AppRouter from "./Utilities/AppRouter";
 
 function App() {
   return (
     <div className="App">
-      <AppRouter/> 
-      {/* <Questionnaire/> */}
+      <AppRouter />
     </div>
   );
 }
