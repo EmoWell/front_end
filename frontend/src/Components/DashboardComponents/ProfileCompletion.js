@@ -9,8 +9,8 @@ export default function ProfileCompletion({ profileCompletion }) {
         datasets: [
           {
             data: [profileCompletion, 100 - profileCompletion],
-            backgroundColor: ["#36A2EB", "#FF6384"],
-            hoverBackgroundColor: ["#36A2EB", "#FF6384"],
+            backgroundColor: ["rgba(33, 53, 115, 0.8)", "rgba(58, 123, 33, 0.8)"],
+            hoverBackgroundColor: ["rgba(33, 53, 115, 0.8)", "rgba(58, 123, 33, 0.8)"],
           },
         ],
       };
