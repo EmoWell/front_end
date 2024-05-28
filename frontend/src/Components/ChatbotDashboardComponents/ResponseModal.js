@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function ResponseModal({ onClose }) {
-  const [modalText, setModalText] = useState("Thanking you for taking the test");
+  const [modalText, setModalText] = useState("Thank you for taking the test");
   const [phqScore, setPhqScore] = useState(0);
   const userId = localStorage.getItem("user_id");
   const navigate = useNavigate(); 
@@ -23,6 +23,15 @@ export default function ResponseModal({ onClose }) {
         });
     }
   }, [userId]);
+
+  const getSeverityText = (score) => {
+    if (score >= 1 && score <= 4) return "Minimal depression";
+    if (score >= 5 && score <= 9) return "Mild depression";
+    if (score >= 10 && score <= 14) return "Moderate depression";
+    if (score >= 15 && score <= 19) return "Moderately severe depression";
+    if (score >= 20 && score <= 27) return "Severe depression";
+    return "";
+  };
 
   const handleCloseClick = () => {
     onClose();
@@ -82,6 +91,42 @@ export default function ResponseModal({ onClose }) {
               <h3 className="mb-5 text-lg font-normal text-gray-500">
                 {modalText}
               </h3>
+              <p className="mb-5 text-lg font-normal text-gray-500">
+                Depression Severity: {getSeverityText(phqScore)}
+              </p>
+              <div className="text-left">
+                <p className="text-md font-semibold">Depression Severity Criteria:</p>
+                <table className="w-full mt-2 mb-4 text-left text-gray-700">
+                  <thead>
+                    <tr>
+                      <th className="border px-4 py-2">Total Score</th>
+                      <th className="border px-4 py-2">Depression Severity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border px-4 py-2">1-4</td>
+                      <td className="border px-4 py-2">Minimal depression</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">5-9</td>
+                      <td className="border px-4 py-2">Mild depression</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">10-14</td>
+                      <td className="border px-4 py-2">Moderate depression</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">15-19</td>
+                      <td className="border px-4 py-2">Moderately severe depression</td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">20-27</td>
+                      <td className="border px-4 py-2">Severe depression</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               {phqScore > 14 && (
                 <button
                   type="button"
@@ -91,7 +136,7 @@ export default function ResponseModal({ onClose }) {
                   Take BDI-2 Assessment
                 </button>
               )}
-              {modalText !== "Thanking you for taking the test" && (
+              {modalText !== "Thank you for taking the test" && (
                 <button
                   type="button"
                   className="text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"

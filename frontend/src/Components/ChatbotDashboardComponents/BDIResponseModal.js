@@ -55,6 +55,45 @@ export default function BDIResponseModal({ onClose, score }) {
               <h3 className="mb-5 text-lg font-normal text-gray-500">
                 Your BDI score: {score}
               </h3>
+              <div className="text-left">
+                <p className="text-md font-semibold">
+                  Depression Severity Criteria:
+                </p>
+                <table className="w-full mt-2 mb-4 text-left text-gray-700">
+                  <thead>
+                    <tr>
+                      <th className="border px-4 py-2">Raw Scores</th>
+                      <th className="border px-4 py-2">Depression Severity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border px-4 py-2">0-13</td>
+                      <td className="border px-4 py-2">
+                        Indicates minimal depression
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">14-19</td>
+                      <td className="border px-4 py-2">
+                        Indicates mild depression
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">20-28</td>
+                      <td className="border px-4 py-2">
+                        Indicates moderate depression
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">29-63</td>
+                      <td className="border px-4 py-2">
+                        Indicates severe depression
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <button
                 type="button"
                 className="text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-3"
